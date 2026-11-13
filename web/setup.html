@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4ecdf">
+  <title>seen · set up your button</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Courier+Prime:wght@400;700&family=DM+Sans:opsz,wght@9..40,400..700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..700,0..100,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .back { font: 700 11px var(--type); letter-spacing: .1em; text-transform: uppercase; }
+    .title { margin-top: 18px; font: italic 600 46px/.95 var(--display); font-variation-settings: "opsz" 144, "SOFT" 80, "WONK" 1; letter-spacing: -.02em; }
+    .lede { margin-top: 12px; color: var(--ink-2); font-size: 15px; }
+    .lede b { color: var(--ink); }
+    .clock { margin-top: 6px; font: 600 20px var(--hand); color: var(--cherry); transform: rotate(-1.5deg); display: inline-block; }
+  </style>
+</head>
+<body>
+  <main class="home">
+    <div class="masthead"><a class="back" href="/">← seen.</a><span>Set-up guide</span><span>p. 2</span></div>
+    <div class="rule2"></div>
+
+    <h1 class="title">Make your<br>magic button.</h1>
+    <p class="clock">takes about two minutes ✶</p>
+    <p class="lede">Open the <b>Shortcuts</b> app, tap <b>+</b>, name it <b>Find outfit</b>, then add these 5 actions in order. Search each name in the action list.</p>
+
+    <div class="warn" id="noToken" hidden>This page needs your token. Open it as <b>/setup?token=…</b> (the APP_TOKEN from your .env).</div>
+
+    <div class="steps">
+      <div class="step"><span class="no">1</span><div class="name">Take Screenshot</div>
+        <div class="set">That's it, no settings.</div></div>
+      <div class="step"><span class="no">2</span><div class="name">Resize Image</div>
+        <div class="set">Tap <i>Width</i> and type <b>1080</b>. Leave height on Auto.</div></div>
+      <div class="step"><span class="no">3</span><div class="name">Convert Image</div>
+        <div class="set">Set it to <b>JPEG</b>. Smaller upload, faster magic.</div></div>
+      <div class="step"><span class="no">4</span><div class="name">Get Contents of URL</div>
+        <div class="set">Paste this as the URL:</div>
+        <div class="copy"><code id="url">…</code><button data-copy="url">Copy</button></div>
+        <div class="set" style="margin-top:10px">Tap <b>›</b> to expand it, then set<br>Method: <b>POST</b><br>Request Body: <b>File</b> → <b>Converted Image</b></div></div>
+      <div class="step"><span class="no">5</span><div class="name">Open URLs</div>
+        <div class="set">It fills in <b>Contents of URL</b> on its own.</div></div>
+    </div>
+
+    <h2 class="section-h">Then give it a button <span class="type">pick one</span></h2>
+    <div class="steps">
+      <div class="step"><span class="no">A</span><div class="name">Action Button<small>iPhone 15 Pro & newer</small></div>
+        <div class="set">Settings › Action Button › swipe to <b>Shortcut</b> › choose <b>Find outfit</b>.</div></div>
+      <div class="step"><span class="no">B</span><div class="name">Back Tap<small>iPhone 8 & newer</small></div>
+        <div class="set">Settings › Accessibility › Touch › Back Tap › <b>Double Tap</b> › choose <b>Find outfit</b>. Then just double-tap the back of your phone.</div></div>
+    </div>
+
+    <h2 class="section-h">Take it for a spin</h2>
+    <p class="lede">Open Instagram, find a fit you love, and press. The first time, iOS asks to let the shortcut take screenshots and connect to seen. Tap <b>Always Allow</b> both times.</p>
+    <p class="check" id="status"></p>
+
+    <div class="spacer"></div>
+    <p class="privacy">Your token is part of the link in step 4.<br>Keep the link and the shortcut to yourself.</p>
+  </main>
+  <div class="toast" id="toast"></div>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let token = new URLSearchParams(location.search).get("token");
+    try { if (token) localStorage.setItem("seen.token", JSON.stringify(token)); else token = JSON.parse(localStorage.getItem("seen.token") || "null"); } catch {}
+    if (!token) $("noToken").hidden = false;
+    $("url").textContent = `${location.origin}/api/shortcut?token=${encodeURIComponent(token || "YOUR_APP_TOKEN")}`;
+
+    document.addEventListener("click", async (e) => {
+      const b = e.target.closest("[data-copy]");
+      if (!b) return;
+      const text = $(b.dataset.copy).textContent;
+      try { await navigator.clipboard.writeText(text); toast("Copied ✶"); b.textContent = "Copied"; }
+      catch { const r = document.createRange(); r.selectNode($(b.dataset.copy)); getSelection().removeAllRanges(); getSelection().addRange(r); toast("Press and hold to copy"); }
+    });
+
+    // Is the server reachable, and is the token right? (An empty POST is rejected before any work happens.)
+    if (token) {
+      fetch(`/api/shortcut?token=${encodeURIComponent(token)}`, { method: "POST", body: "" })
+        .then((r) => {
+          const ok = r.status !== 401;
+          $("status").className = "check " + (ok ? "ok" : "bad");
+          $("status").textContent = ok ? "✓ connected, you're good to go" : "✗ that token doesn't match the server";
+        })
+        .catch(() => { $("status").className = "check bad"; $("status").textContent = "✗ can't reach the server right now"; });
+    }
+
+    function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("on"), 1500); }
+  </script>
+</body>
+</html>

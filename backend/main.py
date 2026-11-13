@@ -61,6 +61,12 @@ def empty_results() -> dict:
 
 # ---------------------------------------------------------------- 1. capture: find the pieces
 
+def check_token(token: str | None) -> None:
+    expected = os.getenv("APP_TOKEN")
+    if expected and not secrets.compare_digest(token or "", expected):
+        raise HTTPException(401, "bad token")
+
+
 @app.post("/api/analyze")
 async def analyze(
     request: Request,
@@ -68,10 +74,22 @@ async def analyze(
     image: UploadFile = File(...),
     x_app_token: str | None = Header(default=None),
 ):
-    expected = os.getenv("APP_TOKEN")
-    if expected and not secrets.compare_digest(x_app_token or "", expected):
-        raise HTTPException(401, "bad token")
-    raw = await image.read()
+    """Web app upload: multipart form, token in a header, JSON back."""
+    check_token(x_app_token)
+    return start_look(await image.read(), request, background)
+
+
+@app.post("/api/shortcut")
+async def shortcut(request: Request, background: BackgroundTasks, token: str | None = None):
+    """iOS Shortcut upload, built to need as few Shortcut actions as possible:
+    the raw image is the request body, the token rides in the URL, and the reply is
+    the results link as plain text, so the next action can be just 'Open URLs'."""
+    check_token(token)
+    look = start_look(await request.body(), request, background)
+    return Response(look["url"], media_type="text/plain")
+
+
+def start_look(raw: bytes, request: Request, background: BackgroundTasks) -> dict:
     if not raw or len(raw) > MAX_UPLOAD:
         raise HTTPException(413, "image missing or too large")
 
@@ -236,6 +254,11 @@ async def media(lid: str, name: str):
 @app.get("/look/{lid}")
 async def look_page(lid: str):
     return FileResponse(WEB / "look.html")
+
+
+@app.get("/setup")
+async def setup_page():
+    return FileResponse(WEB / "setup.html")
 
 
 @app.get("/health")

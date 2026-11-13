@@ -35,24 +35,23 @@ Put the `https://….trycloudflare.com` URL it prints into `PUBLIC_BASE_URL` in 
 
 ## 3. Make the "Find outfit" shortcut (on the iPhone, one time)
 
-In the Shortcuts app, create a new shortcut named **Find outfit** with these 6 actions:
+Easiest: on your iPhone, open `https://YOUR-PUBLIC-URL/setup?token=YOUR_APP_TOKEN`. It walks through these steps with your link pre-filled and a Copy button.
+
+In the Shortcuts app, tap **+**, name it **Find outfit**, and add 5 actions:
 
 1. **Take Screenshot**
-2. **Resize Image**: Width `1080` (height auto)
-3. **Convert Image**: to `JPEG`, quality about 80%. (Steps 2 and 3 shrink the upload from ~4 MB to ~200 KB, which saves 1-3 s on cellular.)
-4. **Get Contents of URL**
-   - URL: `https://YOUR-PUBLIC-URL/api/analyze`
-   - Method: `POST`
-   - Headers: `X-App-Token` = your `APP_TOKEN`
-   - Request Body: `Form`, add a **File** field named `image` with the value **Converted Image**
-5. **Get Dictionary Value**: `url` from **Contents of URL**
-6. **Open URLs**: **Dictionary Value**
+2. **Resize Image**: Width `1080`
+3. **Convert Image**: to `JPEG`
+4. **Get Contents of URL**: `https://YOUR-PUBLIC-URL/api/shortcut?token=YOUR_APP_TOKEN`, Method `POST`, Request Body `File` = **Converted Image**
+5. **Open URLs**: **Contents of URL** (the server replies with the results link as plain text)
 
-Then set the trigger:
+Then put it on a button:
 - **Action Button** (iPhone 15 Pro and newer): Settings › Action Button › Shortcut › Find outfit
 - **Back Tap** (any iPhone 8 or newer): Settings › Accessibility › Touch › Back Tap › Double Tap › Find outfit
 
-To share it with others, tap Share › Copy iCloud Link on the shortcut and paste the link into `web/config.json` (`shortcutUrl`). The "Get the shortcut" button on the home page will then link to it.
+The first run asks permission to take screenshots and to connect to the server: choose **Always Allow**.
+
+**Note:** `start.ps1` gets a new random URL every time it starts, which breaks the shortcut. Keep it running, or give the server a permanent URL (deploy it to a host).
 
 ## Speed
 
