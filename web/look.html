@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1c1b1f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>seen · the look</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="stage" id="stage">
+    <div class="pill"><span>seen</span><span class="mono" id="pill">reading</span></div>
+    <div class="shot-wrap" id="wrap">
+      <img id="shot" alt="">
+      <div class="scan"></div>
+    </div>
+
+    <section class="picker" id="picker">
+      <div class="grab"></div>
+      <div class="row"><span id="pickTitle">Finding pieces</span><span class="mono" id="timer">0.0s</span></div>
+      <div class="sub" id="pickSub">Reading the look…</div>
+      <div class="chips" id="chips"></div>
+    </section>
+
+    <section class="sheet" id="sheet" aria-label="Results">
+      <div class="grab"></div>
+      <header class="sheet-head">
+        <img id="headImg" alt="">
+        <div>
+          <div class="t" id="headTitle">The look</div>
+          <div class="s" id="headSub"></div>
+        </div>
+        <button class="close" id="close" aria-label="Back to the look">✕</button>
+      </header>
+      <nav class="tabs" id="tabs"></nav>
+      <div class="seg" id="seg">
+        <button data-b="closest" class="on">Closest</button>
+        <button data-b="similar">Similar</button>
+        <button data-b="under">Under $50</button>
+      </div>
+      <div class="list" id="list"></div>
+      <footer class="foot">
+        <button class="save" id="save" aria-label="Save">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12v18l-6-4-6 4z"/></svg>
+        </button>
+        <a class="btn" id="best" target="_blank" rel="noopener">Shop best match <span class="mono" id="bestPrice"></span></a>
+      </footer>
+    </section>
+  </main>
+  <div class="toast" id="toast"></div>
+  <script src="/look.js"></script>
+</body>
+</html>

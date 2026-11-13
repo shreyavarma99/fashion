@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f7f4">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="seen">
+  <title>seen</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="home">
+    <div class="brand">seen</div>
+
+    <div class="eyebrow">Set up once · 30 seconds</div>
+    <h1 class="hero">See it.<br>Shop it.</h1>
+    <p class="lede">Press your Action Button on any outfit, in a reel, a story, anywhere. You get every piece, matched.</p>
+
+    <div class="steps">
+      <div class="step"><span class="n">01</span><span>Add the <a id="getShortcut" href="#">Find outfit</a> shortcut</span></div>
+      <div class="step"><span class="n">02</span><span>Open <b>Settings › Action Button</b>, swipe to <b>Shortcut</b>, pick <b>Find outfit</b></span></div>
+      <div class="step"><span class="n">03</span><span>Done. Press it on any look.</span></div>
+    </div>
+    <p class="note">No Action Button? Back Tap works too: Settings › Accessibility › Touch › Back Tap › Double Tap.</p>
+
+    <section class="closet" id="closet" hidden>
+      <h2>Your looks</h2>
+      <div id="savedList"></div>
+    </section>
+
+    <div class="spacer"></div>
+
+    <a class="btn" id="cta" href="#">Get the shortcut</a>
+    <label class="btn ghost test">Try it with a screenshot<input type="file" id="file" accept="image/*"></label>
+    <p class="privacy"><span>🔒</span><span>Captures stay in memory and are deleted within an hour. Nothing goes to Photos.</span></p>
+  </main>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+    const ls = {
+      get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
+      set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+    };
+
+    // The iCloud link to the shared "Find outfit" shortcut (see README). Set it in config.json.
+    fetch("/config.json").then((r) => r.ok ? r.json() : {}).catch(() => ({})).then((cfg) => {
+      for (const el of [$("getShortcut"), $("cta")]) {
+        el.href = cfg.shortcutUrl || "#";
+        if (!cfg.shortcutUrl) el.onclick = (e) => { e.preventDefault(); toast("Shortcut link not set yet. See README."); };
+      }
+    });
+
+    // Saved looks
+    function renderCloset() {
+      const closet = ls.get("seen.closet", []);
+      $("closet").hidden = !closet.length;
+      $("savedList").innerHTML = closet.map((l) => `
+        <a class="saved" href="/look/saved?saved=${encodeURIComponent(l.id)}">
+          <img src="${esc(l.thumb || "")}" alt="" referrerpolicy="no-referrer">
+          <div><div class="t">${l.pieces.map((p) => esc(p.label)).join(" · ")}</div>
+          <div class="s">${l.creator ? "@" + esc(l.creator) + " · " : ""}${new Date(l.savedAt).toLocaleDateString()}</div></div>
+          <button class="x" data-id="${esc(l.id)}" aria-label="Remove">✕</button>
+        </a>`).join("");
+    }
+    $("savedList").addEventListener("click", (e) => {
+      const x = e.target.closest(".x");
+      if (!x) return;
+      e.preventDefault();
+      ls.set("seen.closet", ls.get("seen.closet", []).filter((l) => l.id !== x.dataset.id));
+      renderCloset();
+    });
+    renderCloset();
+
+    // Manual upload (for testing on desktop, or without the shortcut)
+    const token = new URLSearchParams(location.search).get("token");
+    if (token) ls.set("seen.token", token);
+    $("file").addEventListener("change", async (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      toast("Uploading…");
+      const body = new FormData();
+      body.append("image", f);
+      const r = await fetch("/api/analyze", { method: "POST", body, headers: { "X-App-Token": ls.get("seen.token", "") } });
+      if (r.status === 401) return toast("Open this page once with ?token=YOUR_APP_TOKEN");
+      if (!r.ok) return toast("Upload failed");
+      location.href = (await r.json()).url;
+    });
+
+    function toast(msg) {
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.add("on");
+      clearTimeout(toast.t);
+      toast.t = setTimeout(() => t.classList.remove("on"), 2200);
+    }
+  </script>
+</body>
+</html>
