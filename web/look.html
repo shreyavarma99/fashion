@@ -3,51 +3,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#1c1b1f">
+  <meta name="theme-color" content="#1d1714">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>seen · the look</title>
   <link rel="manifest" href="/manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Courier+Prime:wght@400;700&family=DM+Sans:opsz,wght@9..40,400..700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..700,0..100,0..1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
   <main class="stage" id="stage">
-    <div class="pill"><span>seen</span><span class="mono" id="pill">reading</span></div>
-    <div class="shot-wrap" id="wrap">
-      <img id="shot" alt="">
-      <div class="scan"></div>
-    </div>
+    <div class="flash"></div>
+    <div class="pill"><span class="rec"></span><span class="logo">seen<i>.</i></span><span class="type" id="pill">developing…</span></div>
 
-    <section class="picker" id="picker">
+    <figure class="shot-wrap" id="polaroid">
+      <div class="frame" id="wrap">
+        <img id="shot" alt="Your screenshot">
+        <div class="scan"></div>
+      </div>
+      <figcaption class="caption"><span id="capHandle">spotted ✶</span><span class="type" id="capTime"></span></figcaption>
+    </figure>
+
+    <section class="picker" id="picker" aria-live="polite">
       <div class="grab"></div>
-      <div class="row"><span id="pickTitle">Finding pieces</span><span class="mono" id="timer">0.0s</span></div>
-      <div class="sub" id="pickSub">Reading the look…</div>
-      <div class="chips" id="chips"></div>
+      <div class="row"><h2 id="pickTitle">Spotting the goods…</h2><span class="timer" id="timer">0.0s</span></div>
+      <div class="sub" id="pickSub">hold still, darling</div>
+      <div class="chips" id="chips"><span class="ghost-chip"></span><span class="ghost-chip"></span><span class="ghost-chip"></span></div>
     </section>
 
-    <section class="sheet" id="sheet" aria-label="Results">
+    <section class="sheet" id="sheet" aria-label="Matches">
       <div class="grab"></div>
       <header class="sheet-head">
-        <img id="headImg" alt="">
+        <div class="mini-pola"><img id="headImg" alt=""></div>
         <div>
           <div class="t" id="headTitle">The look</div>
           <div class="s" id="headSub"></div>
         </div>
-        <button class="close" id="close" aria-label="Back to the look">✕</button>
+        <button class="close" id="close" aria-label="Back to the photo">← photo</button>
       </header>
       <nav class="tabs" id="tabs"></nav>
       <div class="seg" id="seg">
         <button data-b="closest" class="on">Closest</button>
-        <button data-b="similar">Similar</button>
+        <button data-b="similar">Same vibe</button>
         <button data-b="under">Under $50</button>
       </div>
       <div class="list" id="list"></div>
       <footer class="foot">
-        <button class="save" id="save" aria-label="Save">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12v18l-6-4-6 4z"/></svg>
+        <button class="save" id="save" aria-label="Save to your closet">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3c-1.1 0-2 .9-2 2 0 .8.5 1.5 1.2 1.8L12 7.2 3.4 13.6c-.9.7-.4 2.1.7 2.1h15.8c1.1 0 1.6-1.4.7-2.1L12 7.2"/></svg>
         </button>
-        <a class="btn" id="best" target="_blank" rel="noopener">Shop best match <span class="mono" id="bestPrice"></span></a>
+        <a class="btn" id="best" target="_blank" rel="noopener">Take me to it <span class="type" id="bestPrice"></span></a>
       </footer>
     </section>
   </main>

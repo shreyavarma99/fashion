@@ -3,41 +3,85 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f8f7f4">
+  <meta name="theme-color" content="#f4ecdf">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="seen">
   <title>seen</title>
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Courier+Prime:wght@400;700&family=DM+Sans:opsz,wght@9..40,400..700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..700,0..100,0..1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
+  <style>
+    .wm-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 6px; }
+    .wm-note { margin-bottom: 18px; transform: rotate(-6deg); font: 600 23px/1.05 var(--hand); color: var(--cherry); text-align: right; }
+    .wm-note::before { content: "↙"; display: block; font-size: 20px; margin-right: 18px; }
+  </style>
 </head>
 <body>
   <main class="home">
-    <div class="brand">seen</div>
+    <div class="masthead"><span>Vol. 01</span><span>The Spotting Issue</span><span>Est. 2026</span></div>
+    <div class="rule2"></div>
 
-    <div class="eyebrow">Set up once · 30 seconds</div>
-    <h1 class="hero">See it.<br>Shop it.</h1>
-    <p class="lede">Press your Action Button on any outfit, in a reel, a story, anywhere. You get every piece, matched.</p>
-
-    <div class="steps">
-      <div class="step"><span class="n">01</span><span>Add the <a id="getShortcut" href="#">Find outfit</a> shortcut</span></div>
-      <div class="step"><span class="n">02</span><span>Open <b>Settings › Action Button</b>, swipe to <b>Shortcut</b>, pick <b>Find outfit</b></span></div>
-      <div class="step"><span class="n">03</span><span>Done. Press it on any look.</span></div>
+    <div class="wm-row">
+      <h1 class="wordmark">seen<span class="dot">.</span></h1>
+      <p class="wm-note">saw it.<br>want it.</p>
     </div>
-    <p class="note">No Action Button? Back Tap works too: Settings › Accessibility › Touch › Back Tap › Double Tap.</p>
+    <p class="tagline">See it on <em>someone.</em> Find it <em>for you.</em></p>
 
-    <section class="closet" id="closet" hidden>
-      <h2>Your looks</h2>
-      <div id="savedList"></div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="pola p1">
+        <div class="pic">
+          <svg class="fig" viewBox="0 0 100 140" fill="none">
+            <circle cx="50" cy="20" r="11" fill="#e8c4a6"/>
+            <path d="M28 40c4-6 12-9 22-9s18 3 22 9l6 46H22z" fill="#3b2a22"/>
+            <path d="M44 33l6 22 6-22" fill="#efe4d4"/>
+            <path d="M30 86h40l-2 54H32z" fill="#efe4d4"/>
+          </svg>
+          <div class="mark" style="left:20%;top:20%;width:60%;height:44%"></div>
+        </div>
+        <div class="tape"></div>
+        <div class="cap">the coat ✶</div>
+      </div>
+      <div class="pola p2">
+        <div class="pic">
+          <svg class="fig" viewBox="0 0 100 140" fill="none">
+            <circle cx="50" cy="20" r="11" fill="#d8ae8c"/>
+            <path d="M30 38c5-5 12-7 20-7s15 2 20 7l3 40H27z" fill="#a3312f"/>
+            <path d="M27 78h46l6 62H21z" fill="#2a211c"/>
+            <rect x="72" y="62" width="16" height="14" rx="3" fill="#d9a441"/>
+            <path d="M74 62c0-8 12-8 12 0" stroke="#d9a441" stroke-width="2"/>
+          </svg>
+          <div class="mark" style="left:68%;top:38%;width:24%;height:22%"></div>
+          <div class="mark" style="left:16%;top:52%;width:66%;height:48%"></div>
+        </div>
+        <div class="tape" style="transform:translateX(-50%) rotate(5deg)"></div>
+        <div class="cap">that bag?!</div>
+      </div>
+      <div class="hangtag">spot it ✶</div>
+    </div>
+
+    <h2 class="section-h">How it works <span class="type">3 steps</span></h2>
+    <div class="tickets">
+      <div class="ticket"><span class="no">1</span><p><b>Press your button on any outfit.</b><small>A reel, a story, anywhere. Action Button or a double-tap on the back of your phone.</small></p></div>
+      <div class="ticket"><span class="no">2</span><p><b>Tap the piece you're coveting.</b><small>Every piece gets spotted, right down to the socks.</small></p></div>
+      <div class="ticket"><span class="no">3</span><p><b>Shop the real deal, or the dupe.</b><small>Exact matches, near twins, and finds under $50.</small></p></div>
+    </div>
+    <p class="note">psst: <a id="getShortcut" href="/setup.html" style="text-decoration:underline wavy var(--cherry);text-underline-offset:4px">set it up once</a> and it works from inside Instagram.</p>
+
+    <section id="closet" hidden>
+      <h2 class="section-h">Your closet <span class="type" id="closetCount"></span></h2>
+      <div class="closet-grid" id="savedList"></div>
     </section>
 
     <div class="spacer"></div>
 
-    <a class="btn" id="cta" href="#">Get the shortcut</a>
-    <label class="btn ghost test">Try it with a screenshot<input type="file" id="file" accept="image/*"></label>
-    <p class="privacy"><span>🔒</span><span>Captures stay in memory and are deleted within an hour. Nothing goes to Photos.</span></p>
+    <div class="cta-group">
+      <a class="btn" id="cta" href="/setup.html">Set up my button <span class="type">→</span></a>
+      <label class="btn ghost test">Try it with a screenshot<input type="file" id="file" accept="image/*"></label>
+    </div>
+    <p class="privacy">Screenshots live in memory for an hour, then poof.<br>Nothing touches your camera roll.</p>
   </main>
   <div class="toast" id="toast"></div>
 
@@ -49,24 +93,27 @@
       set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
     };
 
-    // The iCloud link to the shared "Find outfit" shortcut (see README). Set it in config.json.
-    fetch("/config.json").then((r) => r.ok ? r.json() : {}).catch(() => ({})).then((cfg) => {
-      for (const el of [$("getShortcut"), $("cta")]) {
-        el.href = cfg.shortcutUrl || "#";
-        if (!cfg.shortcutUrl) el.onclick = (e) => { e.preventDefault(); toast("Shortcut link not set yet. See README."); };
-      }
+    // Token: from ?token= once, then remembered on this device.
+    const urlToken = new URLSearchParams(location.search).get("token");
+    if (urlToken) ls.set("seen.token", urlToken);
+    const token = ls.get("seen.token", "");
+
+    // "Set up" goes to the shared iCloud shortcut if one is configured, else our setup page.
+    fetch("/config.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})).then((cfg) => {
+      const setup = cfg.shortcutUrl || `/setup.html${token ? "?token=" + encodeURIComponent(token) : ""}`;
+      for (const el of [$("getShortcut"), $("cta")]) el.href = setup;
     });
 
-    // Saved looks
+    // The closet: saved pieces, shown as polaroids.
     function renderCloset() {
       const closet = ls.get("seen.closet", []);
       $("closet").hidden = !closet.length;
+      $("closetCount").textContent = closet.length ? `${closet.length} hung up` : "";
       $("savedList").innerHTML = closet.map((l) => `
         <a class="saved" href="/look/saved?saved=${encodeURIComponent(l.id)}">
           <img src="${esc(l.thumb || "")}" alt="" referrerpolicy="no-referrer">
-          <div><div class="t">${l.pieces.map((p) => esc(p.label)).join(" · ")}</div>
-          <div class="s">${l.creator ? "@" + esc(l.creator) + " · " : ""}${new Date(l.savedAt).toLocaleDateString()}</div></div>
-          <button class="x" data-id="${esc(l.id)}" aria-label="Remove">✕</button>
+          <div class="t">${l.pieces.map((p) => esc(p.label.toLowerCase())).join(", ")}${l.creator ? " · @" + esc(l.creator) : ""}</div>
+          <button class="x" data-id="${esc(l.id)}" aria-label="Remove from closet">✕</button>
         </a>`).join("");
     }
     $("savedList").addEventListener("click", (e) => {
@@ -75,22 +122,23 @@
       e.preventDefault();
       ls.set("seen.closet", ls.get("seen.closet", []).filter((l) => l.id !== x.dataset.id));
       renderCloset();
+      toast("Taken off the rail");
     });
     renderCloset();
 
-    // Manual upload (for testing on desktop, or without the shortcut)
-    const token = new URLSearchParams(location.search).get("token");
-    if (token) ls.set("seen.token", token);
+    // Manual upload (testing on desktop, or without the shortcut).
     $("file").addEventListener("change", async (e) => {
       const f = e.target.files[0];
       if (!f) return;
-      toast("Uploading…");
+      toast("Developing…");
       const body = new FormData();
       body.append("image", f);
-      const r = await fetch("/api/analyze", { method: "POST", body, headers: { "X-App-Token": ls.get("seen.token", "") } });
-      if (r.status === 401) return toast("Open this page once with ?token=YOUR_APP_TOKEN");
-      if (!r.ok) return toast("Upload failed");
-      location.href = (await r.json()).url;
+      try {
+        const r = await fetch("/api/analyze", { method: "POST", body, headers: { "X-App-Token": token } });
+        if (r.status === 401) return toast("Open this page once with ?token=…");
+        if (!r.ok) return toast("That didn't upload. Try again?");
+        location.href = (await r.json()).url;
+      } catch { toast("Can't reach the server"); }
     });
 
     function toast(msg) {
